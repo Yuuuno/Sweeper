@@ -15,13 +15,15 @@
     },
     "permissions": [],
     "host_permissions": [
-        "*://*/*"
+        "https://minesweeperonline.com/*"
     ],
     "background": {
         "service_worker": "service-worker.js"
     },
     "content_scripts": [{
         "js": ["foreground.js"],
-        "matches": ["https://github.com/*"]
+        "matches": [
+            "https://minesweeperonline.com/*"
+        ]
     }]
 }
