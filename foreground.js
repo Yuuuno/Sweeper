@@ -131,10 +131,44 @@ function clickCell(row, col) {
     el.dispatchEvent(new MouseEvent('mouseup',   { bubbles: true, button: 0 }));
   }
   
-let autoSolveEnabled = false;
+let autoSolving = false;
 
 function logAutoSolveState() {
-    console.log(`Auto-solve is now ${autoSolveEnabled ? 'ENABLED' : 'DISABLED'}. Press 'A' to toggle.`);
+    console.log(`Auto-solve is now ${autoSolving ? 'ENABLED' : 'DISABLED'}. Press 'A' to toggle.`);
+  }
+
+  async function autoSolveLoop() {
+    if (autoSolving) {
+      console.log("Auto-solve already running.");
+      return;
+    }
+    autoSolving = true;
+    console.log("Auto-solve started. Press 'A' again to request stop.");
+  
+    try {
+      while (autoSolving) {
+        const board = readBoard();
+        const { safeCells } = findMoves(board);
+  
+        if (!safeCells || safeCells.length === 0) {
+          console.log("Auto-solve: no more guaranteed safe moves.");
+          break;
+        }
+  
+        console.log(`Auto-solve: clicking ${safeCells.length} safe cells...`);
+  
+        // Click all safe cells
+        for (const { row, col } of safeCells) {
+          clickCell(row, col);
+        }
+  
+        // Wait a bit for the game to update before the next iteration
+        await new Promise(resolve => setTimeout(resolve, 150));
+      }
+    } finally {
+      autoSolving = false;
+      console.log("Auto-solve stopped.");
+    }
   }
 
 window.addEventListener('keydown', (e) => {
@@ -142,9 +176,12 @@ window.addEventListener('keydown', (e) => {
 
     // Press 'A' to toggle auto-solve
     if (e.key === 'a' || e.key === 'A') {
-        autoSolveEnabled = !autoSolveEnabled;
-        logAutoSolveState();
-        return;
+        if (autoSolving) {
+            console.log("Stopping auto-solve after current step...");
+            autoSolving = false;
+        } else {
+            autoSolveLoop();
+        }
     }
     // Press 'R' to read the board
     if (e.key === 'r' || e.key === 'R') {
@@ -181,11 +218,5 @@ window.addEventListener('keydown', (e) => {
           element.style.outline = '2px solid red';
         }
       });
-
-      if (autoSolveEnabled) {
-        safeCells.forEach(({row, col}) => {
-            clickCell(row,col);
-        });
-      }
     }
   });
