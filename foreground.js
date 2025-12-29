@@ -121,7 +121,31 @@ console.log("Sweeper extension loaded. Press 'R' to read the board, 'S' to solve
 
 window.readBoard = readBoard;
 
+function clickCell(row, col) {
+    const id = `${row}_${col}`;
+    const el = document.getElementById(id);
+    if (!el) return;
+  
+    // Left-click to open a tile
+    el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, button: 0 }));
+    el.dispatchEvent(new MouseEvent('mouseup',   { bubbles: true, button: 0 }));
+  }
+  
+let autoSolveEnabled = false;
+
+function logAutoSolveState() {
+    console.log(`Auto-solve is now ${autoSolveEnabled ? 'ENABLED' : 'DISABLED'}. Press 'A' to toggle.`);
+  }
+
 window.addEventListener('keydown', (e) => {
+
+
+    // Press 'A' to toggle auto-solve
+    if (e.key === 'a' || e.key === 'A') {
+        autoSolveEnabled = !autoSolveEnabled;
+        logAutoSolveState();
+        return;
+    }
     // Press 'R' to read the board
     if (e.key === 'r' || e.key === 'R') {
       const board = readBoard();
@@ -157,5 +181,11 @@ window.addEventListener('keydown', (e) => {
           element.style.outline = '2px solid red';
         }
       });
+
+      if (autoSolveEnabled) {
+        safeCells.forEach(({row, col}) => {
+            clickCell(row,col);
+        });
+      }
     }
   });
