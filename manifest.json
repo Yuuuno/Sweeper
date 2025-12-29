@@ -21,7 +21,7 @@
         "service_worker": "service-worker.js"
     },
     "content_scripts": [{
-        "js": ["foreground.js"],
+        "js": ["solver.js", "foreground.js"],
         "matches": [
             "https://minesweeperonline.com/*"
         ]

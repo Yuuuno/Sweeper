@@ -117,14 +117,45 @@ function debugPrintBoard(board) {
     console.log("Board state:\n" + grid);
 }
 
-console.log("Sweeper extension loaded. Press 'R' to read the current board state.");
+console.log("Sweeper extension loaded. Press 'R' to read the board, 'S' to solve and highlight cells.");
 
 window.readBoard = readBoard;
 
 window.addEventListener('keydown', (e) => {
-    // Use e.key === 'r' or 'R' depending on your preference
+    // Press 'R' to read the board
     if (e.key === 'r' || e.key === 'R') {
       const board = readBoard();
       console.log('Board from keypress:', board);
+    }
+    
+    // Press 'S' to solve and highlight cells
+    if (e.key === 's' || e.key === 'S') {
+      const board = readBoard();
+      const { safeCells, mineCells } = findMoves(board);
+      
+      console.log(`Found ${safeCells.length} safe cells and ${mineCells.length} mine cells`);
+      console.log('Safe cells:', safeCells);
+      console.log('Mine cells:', mineCells);
+      
+      // Clear previous highlights
+      document.querySelectorAll('.square').forEach(square => {
+        square.style.outline = '';
+      });
+      
+      // Highlight safe cells with green outline
+      safeCells.forEach(({ row, col }) => {
+        const element = document.getElementById(`${row}_${col}`);
+        if (element) {
+          element.style.outline = '2px solid lime';
+        }
+      });
+      
+      // Highlight mine cells with red outline
+      mineCells.forEach(({ row, col }) => {
+        const element = document.getElementById(`${row}_${col}`);
+        if (element) {
+          element.style.outline = '2px solid red';
+        }
+      });
     }
   });
