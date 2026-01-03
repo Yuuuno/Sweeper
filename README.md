@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://raw.githubusercontent.com/SimGus/chrome-addon-v3-starter/master/logo/logo-128.png"/>
+    <img src="https://github.com/Yuuuno/Sweeper/blob/master/logo/ms-logo-1.png"/>
     <h1>Sweeper</h1>
     <h3>A rudimentary minesweeper bot</h3>
 </div>
